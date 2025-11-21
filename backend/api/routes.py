@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from backend.core.database import get_db
 from sqlalchemy import func
@@ -54,3 +54,11 @@ def get_weather_detail(weather_id: int, db: Session = Depends(get_db)):
     if not rec:
         raise HTTPException(status_code=404, detail="Record not found")
     return rec
+
+@router.delete("/weather/reset")
+def reset_database(db: Session = Depends(get_db)):
+    """Delete all weather records from the database"""
+    count = db.query(Weather).count()
+    db.query(Weather).delete()
+    db.commit()
+    return {"message": f"Database reset successfully. Deleted {count} records."}
