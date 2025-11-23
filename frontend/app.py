@@ -5,7 +5,7 @@ import pandas as pd
 import altair as alt
 from datetime import datetime
 
-BACKEND = os.getenv("BACKEND_URL", "https://weatherrestapi.onrender.com")
+BACKEND = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 
 # ===== VÁROSOK LISTÁJA =====
 CITIES = [
