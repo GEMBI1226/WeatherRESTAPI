@@ -46,15 +46,15 @@ THEMES = {
     "dark": {
         "bg_color": "#1a202c",
         "sidebar_bg": "#2d3748",
-        "text_color": "#f7fafc",
-        "subtext_color": "#cbd5e0",
+        "text_color": "#ffffff",
+        "subtext_color": "#e2e8f0",
         "card_bg": "#2d3748",
         "border_color": "#4a5568",
         "primary_color": "#63b3ed",
-        "secondary_text": "#a0aec0",
+        "secondary_text": "#cbd5e0",
         "shadow": "rgba(0,0,0,0.3)",
         "chart_bg": "#2d3748",
-        "chart_text": "#f7fafc"
+        "chart_text": "#ffffff"
     }
 }
 
