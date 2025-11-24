@@ -21,122 +21,182 @@ CITY_NAME_TO_COORDS = {name: (lat, lon) for name, lat, lon in CITIES}
 # ===== MODERN CLEAN DESIGN =====
 st.set_page_config(page_title="Időjárás Dashboard", layout="wide", initial_sidebar_state="expanded")
 
-st.markdown("""
+# ===== THEME CONFIGURATION =====
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+def toggle_theme():
+    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+
+# Define colors for themes
+THEMES = {
+    "light": {
+        "bg_color": "#f5f7fa",
+        "sidebar_bg": "#ffffff",
+        "text_color": "#1a202c",
+        "subtext_color": "#4a5568",
+        "card_bg": "#ffffff",
+        "border_color": "#e2e8f0",
+        "primary_color": "#3182ce",
+        "secondary_text": "#718096",
+        "shadow": "rgba(0,0,0,0.1)",
+        "chart_bg": "white",
+        "chart_text": "#2d3748"
+    },
+    "dark": {
+        "bg_color": "#1a202c",
+        "sidebar_bg": "#2d3748",
+        "text_color": "#f7fafc",
+        "subtext_color": "#cbd5e0",
+        "card_bg": "#2d3748",
+        "border_color": "#4a5568",
+        "primary_color": "#63b3ed",
+        "secondary_text": "#a0aec0",
+        "shadow": "rgba(0,0,0,0.3)",
+        "chart_bg": "#2d3748",
+        "chart_text": "#f7fafc"
+    }
+}
+
+current_theme = THEMES[st.session_state.theme]
+
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    * {
+    * {{
         font-family: 'Inter', sans-serif;
-    }
+    }}
     
     /* Clean background */
-    .stApp {
-        background: #f5f7fa;
-    }
+    .stApp {{
+        background: {current_theme['bg_color']};
+    }}
     
     /* Hide default elements */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
     
     /* Title */
-    h1 {
-        color: #1a202c;
+    h1 {{
+        color: {current_theme['text_color']};
         font-weight: 700;
         padding: 1rem 0;
-    }
+    }}
     
-    h2, h3 {
-        color: #2d3748;
+    h2, h3 {{
+        color: {current_theme['text_color']};
         font-weight: 600;
-    }
+    }}
     
     /* Sidebar */
-    [data-testid="stSidebar"] {
-        background: #ffffff;
-        border-right: 1px solid #e2e8f0;
-    }
+    [data-testid="stSidebar"] {{
+        background: {current_theme['sidebar_bg']};
+        border-right: 1px solid {current_theme['border_color']};
+    }}
+
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {{
+        color: {current_theme['text_color']};
+    }}
+    
+    [data-testid="stSidebar"] label {{
+        color: {current_theme['text_color']};
+    }}
     
     /* Weather cards */
-    .weather-card {
-        background: white;
+    .weather-card {{
+        background: {current_theme['card_bg']};
         border-radius: 12px;
         padding: 1.5rem;
         margin: 1rem 0;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid {current_theme['border_color']};
+        box-shadow: 0 1px 3px {current_theme['shadow']};
         transition: box-shadow 0.2s ease;
-    }
+    }}
     
-    .weather-card:hover {
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
+    .weather-card:hover {{
+        box-shadow: 0 4px 6px {current_theme['shadow']};
+    }}
     
-    .city-name {
+    .city-name {{
         font-size: 1.25rem;
         font-weight: 600;
-        color: #2d3748;
+        color: {current_theme['text_color']};
         margin-bottom: 0.5rem;
-    }
+    }}
     
-    .temperature {
+    .temperature {{
         font-size: 2.5rem;
         font-weight: 700;
-        color: #3182ce;
-    }
+        color: {current_theme['primary_color']};
+    }}
     
-    .weather-detail {
-        color: #4a5568;
+    .weather-detail {{
+        color: {current_theme['subtext_color']};
         font-size: 0.95rem;
         margin: 0.3rem 0;
-    }
+    }}
     
     /* Stats cards */
-    .stat-card {
-        background: white;
+    .stat-card {{
+        background: {current_theme['card_bg']};
         border-radius: 10px;
         padding: 1.5rem;
         text-align: center;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+        border: 1px solid {current_theme['border_color']};
+        box-shadow: 0 1px 3px {current_theme['shadow']};
+    }}
     
-    .stat-value {
+    .stat-value {{
         font-size: 2rem;
         font-weight: 700;
-        color: #3182ce;
-    }
+        color: {current_theme['primary_color']};
+    }}
     
-    .stat-label {
-        color: #718096;
+    .stat-label {{
+        color: {current_theme['secondary_text']};
         font-size: 0.875rem;
         margin-top: 0.5rem;
         font-weight: 500;
-    }
+    }}
     
     /* Buttons */
-    .stButton > button {
-        background: #3182ce;
-        color: white;
+    .stButton > button {{
+        background: {current_theme['primary_color']};
+        color: {current_theme['card_bg'] if st.session_state.theme == 'dark' else 'white'};
         border: none;
         border-radius: 8px;
         padding: 0.6rem 1.5rem;
         font-weight: 600;
         transition: background 0.2s ease;
-    }
+    }}
     
-    .stButton > button:hover {
-        background: #2c5aa0;
-    }
+    .stButton > button:hover {{
+        opacity: 0.9;
+    }}
     
     /* Chart container */
-    .chart-container {
-        background: white;
+    .chart-container {{
+        background: {current_theme['card_bg']};
         border-radius: 12px;
         padding: 1.5rem;
         margin: 1rem 0;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+        border: 1px solid {current_theme['border_color']};
+        box-shadow: 0 1px 3px {current_theme['shadow']};
+    }}
+    
+    /* Info box in sidebar */
+    .info-box {{
+        color: {current_theme['subtext_color']};
+        margin: 1rem 0;
+        padding: 1rem;
+        background: {current_theme['bg_color']};
+        border-radius: 8px;
+        border: 1px solid {current_theme['border_color']};
+    }}
+    .info-box strong {{
+        color: {current_theme['text_color']};
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -146,13 +206,16 @@ st.title("🌤️ Időjárás Dashboard")
 with st.sidebar:
     st.header("⚙️ Beállítások")
     
+    # Dark mode toggle
+    st.toggle("🌙 Sötét mód", value=(st.session_state.theme == "dark"), on_change=toggle_theme)
+    
     city_names = [c[0] for c in CITIES]
     selected_city = st.selectbox("🏙️ Város", city_names, index=1)
     sel_lat, sel_lon = CITY_NAME_TO_COORDS[selected_city]
     
     st.markdown(f"""
-    <div style='color: #4a5568; margin: 1rem 0; padding: 1rem; background: #f7fafc; border-radius: 8px;'>
-        <strong style='color: #2d3748;'>📍 Koordináták:</strong><br/>
+    <div class='info-box'>
+        <strong>📍 Koordináták:</strong><br/>
         Szélesség: {sel_lat}<br/>
         Hosszúság: {sel_lon}
     </div>
@@ -284,7 +347,7 @@ else:
                     <div class='city-name'>{emoji} {row['city']}</div>
                     <div class='temperature'>{row['temperature_c']:.1f}°C</div>
                     <div class='weather-detail'>💨 Szél: {row['windspeed_kmh']:.1f} km/h</div>
-                    <div class='weather-detail' style='font-size: 0.85rem; color: #a0aec0;'>
+                    <div class='weather-detail' style='font-size: 0.85rem; color: {current_theme['secondary_text']};'>
                         🕐 {last_update}
                     </div>
                 </div>
@@ -299,9 +362,9 @@ else:
             alt.Chart(df)
             .mark_line(point=True, strokeWidth=2.5)
             .encode(
-                x=alt.X("fetched_at:T", title="Időpont"),
-                y=alt.Y("temperature_c:Q", title="Hőmérséklet (°C)"),
-                color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10")),
+                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                y=alt.Y("temperature_c:Q", title="Hőmérséklet (°C)", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10"), legend=alt.Legend(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 tooltip=[
                     alt.Tooltip("city:N", title="Város"),
                     alt.Tooltip("fetched_at:T", title="Időpont", format="%Y-%m-%d %H:%M"),
@@ -309,7 +372,13 @@ else:
                     alt.Tooltip("windspeed_kmh:Q", title="Szélsebesség (km/h)", format=".1f"),
                 ],
             )
-            .properties(height=400)
+            .properties(height=400, background=current_theme['chart_bg'])
+            .configure_axis(
+                gridColor=current_theme['border_color']
+            )
+            .configure_view(
+                strokeWidth=0
+            )
         )
         
         st.markdown("<div class='chart-container'>", unsafe_allow_html=True)
@@ -323,9 +392,9 @@ else:
             alt.Chart(df)
             .mark_line(point=True, strokeWidth=2.5)
             .encode(
-                x=alt.X("fetched_at:T", title="Időpont"),
-                y=alt.Y("windspeed_kmh:Q", title="Szélsebesség (km/h)"),
-                color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10")),
+                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                y=alt.Y("windspeed_kmh:Q", title="Szélsebesség (km/h)", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10"), legend=alt.Legend(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 tooltip=[
                     alt.Tooltip("city:N", title="Város"),
                     alt.Tooltip("fetched_at:T", title="Időpont", format="%Y-%m-%d %H:%M"),
@@ -333,7 +402,13 @@ else:
                     alt.Tooltip("windspeed_kmh:Q", title="Szélsebesség (km/h)", format=".1f"),
                 ],
             )
-            .properties(height=400)
+            .properties(height=400, background=current_theme['chart_bg'])
+            .configure_axis(
+                gridColor=current_theme['border_color']
+            )
+            .configure_view(
+                strokeWidth=0
+            )
         )
         
         st.markdown("<div class='chart-container'>", unsafe_allow_html=True)
