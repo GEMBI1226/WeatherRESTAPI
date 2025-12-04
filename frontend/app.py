@@ -362,7 +362,13 @@ else:
             alt.Chart(df)
             .mark_line(point=True, strokeWidth=2.5)
             .encode(
-                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(
+                    labelColor=current_theme['chart_text'], 
+                    titleColor=current_theme['chart_text'],
+                    format="%m/%d %H:%M",
+                    labelAngle=-45,
+                    gridDash=[2, 4]
+                )),
                 y=alt.Y("temperature_c:Q", title="Hőmérséklet (°C)", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10"), legend=alt.Legend(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 tooltip=[
@@ -392,7 +398,13 @@ else:
             alt.Chart(df)
             .mark_line(point=True, strokeWidth=2.5)
             .encode(
-                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
+                x=alt.X("fetched_at:T", title="Időpont", axis=alt.Axis(
+                    labelColor=current_theme['chart_text'], 
+                    titleColor=current_theme['chart_text'],
+                    format="%m/%d %H:%M",
+                    labelAngle=-45,
+                    gridDash=[2, 4]
+                )),
                 y=alt.Y("windspeed_kmh:Q", title="Szélsebesség (km/h)", axis=alt.Axis(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 color=alt.Color("city:N", title="Város", scale=alt.Scale(scheme="category10"), legend=alt.Legend(labelColor=current_theme['chart_text'], titleColor=current_theme['chart_text'])),
                 tooltip=[
