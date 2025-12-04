@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherRESTAPI Projekt - Részletes Elemzés</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 16px;
+        }
+
+        h4 {
+            color: #666;
+            margin: 15px 0 8px 0;
+            font-size: 14px;
+        }
+
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #333;
+            font-size: 0.85em;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        ul,
+        ol {
+            margin: 10px 0 10px 30px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin: 20px 0;
+            color: #555;
+            font-style: italic;
+            background-color: #f9f9f9;
+            padding: 10px 15px;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 30px 0;
+        }
+
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: -20px -20px 30px -20px;
+            border-radius: 0;
+        }
+
+        .header h1 {
+            color: white;
+            border: none;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 15px;
+            }
+
+            .header {
+                margin: -15px -15px 20px -15px;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+                page-break-after: avoid;
+            }
+
+            table,
+            pre,
+            blockquote {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🌤️ WeatherRESTAPI Projekt</h1>
+        <p>Részletes Elemzés és Követelményeknek Való Megfelelés</p>
+    </div>
+
+    <h1>WeatherRESTAPI Projekt - Részletes Elemzés</h1>
+    <h2>📋 Mi a projekt és mit csinál?</h2>
+    <p>Ez egy <strong>mikroszerviz-architektúrájú időjárás REST API alkalmazás</strong>, amely a következő funkciókat
+        valósítja meg:</p>
+    <h3>Főbb Funkciók</h3>
+    <ol>
+        <li><strong>Időjárás adatok lekérése</strong>: Külső API-ból (Open-Meteo) le tudja kérni magyar városok aktuális
+            időjárását</li>
+        <li><strong>Adatok tárolása</strong>: SQLite adatbázisban tartósan eltárolja az időjárás adatokat</li>
+        <li><strong>REST API szolgáltatás</strong>: FastAPI-val készült backend, amely különböző végpontokat nyújt</li>
+        <li><strong>Webes felület</strong>: Streamlit alapú modern frontend időjárás dashboard-dal</li>
+        <li><strong>Automatizáció</strong>: Időzített adatmentés és e-mail értesítés ütemezve</li>
+        <li><strong>Vizualizáció</strong>: Grafikonok és statisztikák az időjárás alakulásáról</li>
+    </ol>
+    <hr />
+    <h2>🏗️ Projekt Architektúra</h2>
+    <h3>1. Backend (FastAPI)</h3>
+    <p><strong>Fájl</strong>: <code>backend/app.py</code> és alkönyvtárak</p>
+    <h4>Moduláris Szerkezet:</h4>
+    <div class="codehilite">
+        <pre><span></span><code>backend/
+├── api/          # REST API végpontok
+├── core/         # Alapvető beállítások (config, database, logging)
+├── models/       # SQLAlchemy ORM modellek
+├── schemas/      # Pydantic sémák
+├── services/     # Üzleti logika (weather, scheduler, email)
+└── tests/        # Pytest egységtesztek
+</code></pre>
+    </div>
+
+    <h4>REST API Végpontok:</h4>
+    <ul>
+        <li><code>GET /health</code> - Státusz ellenőrzés</li>
+        <li><code>POST /weather/fetch?lat=X&amp;lon=Y</code> - Időjárás lekérése és mentése koordinátákhoz</li>
+        <li><code>GET /weather</code> - Összes mentett időjárás adat listázása</li>
+        <li><code>GET /weather/stats</code> - Statisztikák (átlag, min, max hőmérséklet stb.)</li>
+        <li><code>GET /weather/{id}</code> - Egyedi rekord lekérése</li>
+        <li><code>DELETE /weather/reset</code> - Adatbázis törlése</li>
+    </ul>
+    <h3>2. Frontend (Streamlit)</h3>
+    <p><strong>Fájl</strong>: <code>frontend/app.py</code></p>
+    <h4>Funkciók:</h4>
+    <ul>
+        <li>🌤️ <strong>Dashboard</strong>: Modern, tiszta UI dark/light mode-dal</li>
+        <li>📊 <strong>Vizualizációk</strong>: </li>
+        <li>Interaktív hőmérséklet-idővonal grafikon (Altair)</li>
+        <li>Hőmérséklet/szél összehasonlító chart</li>
+        <li>Statisztika kártyák (átlag, min, max értékek)</li>
+        <li>🏙️ <strong>Városok kezelése</strong>: 5 magyar város időjárásának követése</li>
+        <li>🔄 <strong>Valós idejű frissítés</strong>: Backend API hívásokkal</li>
+        <li>🗑️ <strong>Adatbázis kezelés</strong>: Törlés funkció</li>
+    </ul>
+    <h3>3. Adatbázis (SQLite + SQLAlchemy ORM)</h3>
+    <p><strong>Tábla</strong>: <code>weather</code></p>
+    <p><strong>Mezők</strong>:<br />
+        - <code>id</code> - Elsődleges kulcs<br />
+        - <code>temperature_c</code> - Hőmérséklet Celsius-ban<br />
+        - <code>windspeed_kmh</code> - Szélsebesség km/h-ban<br />
+        - <code>latitude</code> - Földrajzi szélesség<br />
+        - <code>longitude</code> - Földrajzi hosszúság<br />
+        - <code>fetched_at</code> - Lekérés időpontja</p>
+    <h3>4. Automatizációs Háttérfolyamat</h3>
+    <p><strong>Fájl</strong>: <code>backend/services/scheduler.py</code></p>
+    <ul>
+        <li><strong>APScheduler</strong> használatával időzített feladatok</li>
+        <li><strong>Funkció</strong>: Óránként (vagy beállított időközönként):</li>
+        <li>Lekéri 5 város időjárását az Open-Meteo API-ról</li>
+        <li>Elmenti az adatbázisba</li>
+        <li>E-mail riportot küld az időjárásról</li>
+    </ul>
+    <p><strong>E-mail küldés</strong>: <code>backend/services/email_service.py</code><br />
+        - <strong>smtplib</strong> és <strong>email.mime</strong> modulokkal<br />
+        - Gmail SMTP-n keresztül</p>
+    <hr />
+    <h2>✅ Hogyan Felel Meg a Követelményeknek?</h2>
+    <h3>1. Mikroszerviz Komponensek ✅</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Követelmény</th>
+                <th>Megvalósítás</th>
+                <th>Fájl</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Backend FastAPI</strong></td>
+                <td>✅ REST API végpontokkal</td>
+                <td><code>backend/app.py</code>, <code>backend/api/routes.py</code></td>
+            </tr>
+            <tr>
+                <td><strong>Frontend Streamlit</strong></td>
+                <td>✅ Webes dashboard</td>
+                <td><code>frontend/app.py</code></td>
+            </tr>
+            <tr>
+                <td><strong>Adatbázis réteg</strong></td>
+                <td>✅ SQLite + SQLAlchemy ORM</td>
+                <td><code>backend/core/database.py</code>, <code>backend/models/weather.py</code></td>
+            </tr>
+            <tr>
+                <td><strong>Automatizáció</strong></td>
+                <td>✅ Időzített adatmentés + e-mail</td>
+                <td><code>backend/services/scheduler.py</code>, <code>backend/services/email_service.py</code></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>2. Technikai Követelmények ✅</h3>
+    <h4>Virtuális Környezet</h4>
+    <div class="codehilite">
+        <pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</code></pre>
+    </div>
+
+    <p>A projekt <code>venv/</code> mappában található, és onnan futtatható.</p>
+    <h4>Önálló Futtatás</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># Backend indítása</span>
+uvicorn<span class="w"> </span>backend.app:app<span class="w"> </span>--reload
+
+<span class="c1"># Frontend indítása</span>
+streamlit<span class="w"> </span>run<span class="w"> </span>frontend/app.py
+</code></pre>
+    </div>
+
+    <p>Vagy a <code>start.sh</code> script segítségével.</p>
+    <h4>Moduláris Szerkezet</h4>
+    <ul>
+        <li>✅ <strong>Több .py fájl</strong>: 98+ Python fájl</li>
+        <li>✅ <strong>Rétegekre bontva</strong>: </li>
+        <li><code>models/</code> - Adatmodellek</li>
+        <li><code>services/</code> - Üzleti logika</li>
+        <li><code>api/</code> - REST végpontok</li>
+        <li><code>frontend/</code> - UI</li>
+    </ul>
+    <h3>3. Programozási Paradigmák ✅</h3>
+    <h4>Objektumorientált (OOP)</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/models/weather.py</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Weather</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;weather&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">temperature_c</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Float</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+</code></pre>
+    </div>
+
+    <h4>Funkcionális</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/services/weather_service.py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_current_weather</span><span class="p">(</span><span class="n">lat</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">wind</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+</code></pre>
+    </div>
+
+    <h4>Procedurális</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/services/scheduler.py - _job() funkció</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="ow">in</span> <span class="n">CITIES</span><span class="p">:</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">la</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">fetch_current_weather</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+    <span class="n">save_weather_record</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">la</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span>
+</code></pre>
+    </div>
+
+    <h3>4. FastAPI Backend Részletek ✅</h3>
+    <ul>
+        <li>✅ <strong>REST végpontok</strong>: Lista, részletek, statisztikák</li>
+        <li>✅ <strong>Streamlit hívja</strong>: Frontend → <code>requests.get(f"{BACKEND}/weather")</code></li>
+        <li>✅ <strong>SQLAlchemy ORM</strong>: <code>backend/models/weather.py</code></li>
+        <li>✅ <strong>Pydantic modellek</strong>: <code>backend/schemas/weather.py</code> (<code>WeatherOut</code>)</li>
+    </ul>
+    <h3>5. API Hívás Lánc ✅</h3>
+    <p><strong>Külső API → Backend → Adatbázis → Frontend</strong></p>
+    <ol>
+        <li>Backend hívja az <strong>Open-Meteo API</strong>-t:</li>
+    </ol>
+    <div class="codehilite">
+        <pre><span></span><code><span class="n">OPEN_METEO_URL</span> <span class="o">=</span> <span class="s2">&quot;https://api.open-meteo.com/v1/forecast?...&quot;</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</code></pre>
+    </div>
+
+    <ol>
+        <li>Adatok mentése <strong>SQLite DB</strong>-be SQLAlchemy-val</li>
+        <li>Frontend lekéri a <strong>FastAPI végpontokról</strong></li>
+        <li>Megjelenítés Streamlit-ben grafikonokkal</li>
+    </ol>
+    <h3>6. Konfigurációkezelés ✅</h3>
+    <p><strong>Környezeti változók</strong> (<code>python-dotenv</code>):</p>
+    <p><code>.env.example</code> fájl:</p>
+    <div class="codehilite">
+        <pre><span></span><code>APP_ENV=dev
+DATABASE_URL=sqlite:///./weather.db
+DEFAULT_LAT=47.4979
+DEFAULT_LON=19.0402
+SCHEDULER_ENABLED=true
+SCHEDULER_INTERVAL_MIN=10
+EMAIL_USER=sender_email
+EMAIL_PASS=your password
+EMAIL_TO=emails
+</code></pre>
+    </div>
+
+    <ul>
+        <li>✅ API kulcsok nincsenek a kódban</li>
+        <li>✅ Adatbázis URL konfigurálható</li>
+        <li>✅ E-mail hitelesítési adatok védve</li>
+    </ul>
+    <h3>7. Automatizált Feladatvégzés ✅</h3>
+    <p><strong>APScheduler</strong> időzített ütemezés:</p>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/services/scheduler.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apscheduler.schedulers.background</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackgroundScheduler</span>
+
+<span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span>
+    <span class="n">_job</span><span class="p">,</span>
+    <span class="s2">&quot;interval&quot;</span><span class="p">,</span>
+    <span class="n">minutes</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">scheduler_interval_min</span><span class="p">,</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;weather_job&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre>
+    </div>
+
+    <ul>
+        <li>✅ <strong>Időzített ütemezés</strong>: X percenként fut</li>
+        <li>✅ <strong>Automatikus adatfrissítés</strong>: 5 város időjárása</li>
+        <li>✅ <strong>E-mail küldés</strong>: smtplib + email.mime</li>
+        <li>✅ <strong>Aszinkron háttér</strong>: BackgroundScheduler</li>
+    </ul>
+    <h3>8. Hibakezelés és Logolás ✅</h3>
+    <h4>Logolás (<code>logging</code> modul):</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/core/logging_conf.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching weather from Open-Meteo...&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Scheduled job failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</code></pre>
+    </div>
+
+    <h4>Hibakezelés:</h4>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># backend/services/scheduler.py</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># ... adatok lekérése</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Scheduled job failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre>
+    </div>
+
+    <h3>9. Egységtesztek (pytest) ✅</h3>
+    <p><strong>Fájl</strong>: <code>backend/tests/test_weather_service.py</code></p>
+    <ul>
+        <li>✅ <strong>23+ sikeres teszt</strong></li>
+        <li>✅ <strong>@pytest.mark.parametrize</strong> használat:</li>
+    </ul>
+    <div class="codehilite">
+        <pre><span></span><code><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;lat,lon,expected_lat,expected_lon&quot;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">47.4979</span><span class="p">,</span> <span class="mf">19.0402</span><span class="p">,</span> <span class="mf">47.4979</span><span class="p">,</span> <span class="mf">19.0402</span><span class="p">),</span>  <span class="c1"># Budapest</span>
+    <span class="p">(</span><span class="mf">48.2082</span><span class="p">,</span> <span class="mf">16.3738</span><span class="p">,</span> <span class="mf">48.2082</span><span class="p">,</span> <span class="mf">16.3738</span><span class="p">),</span>  <span class="c1"># Vienna</span>
+    <span class="c1"># ...</span>
+<span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_fetch_current_weather_with_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">expected_lat</span><span class="p">,</span> <span class="n">expected_lon</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+</code></pre>
+    </div>
+
+    <p><strong>Tesztelt területek</strong>:<br />
+        - Időjárás lekérés különböző koordinátákkal<br />
+        - API hiba kezelés (timeout, connection error, invalid JSON)<br />
+        - Adatbázis mentés<br />
+        - Integráció (fetch + save workflow)</p>
+    <h3>10. Vizualizáció ✅</h3>
+    <p><strong>Streamlit + Altair</strong> grafikonok:</p>
+    <ol>
+        <li><strong>Hőmérséklet-idővonal</strong>: Line chart</li>
+        <li><strong>Hőmérséklet vs. Szél</strong>: Multi-line chart</li>
+        <li><strong>Statisztikai kártyák</strong>: HTML + CSS formázott metrikák</li>
+    </ol>
+    <div class="codehilite">
+        <pre><span></span><code><span class="c1"># frontend/app.py</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">mark_line</span><span class="p">(</span><span class="n">point</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s1">&#39;fetched_at:T&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Időpont&#39;</span><span class="p">),</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s1">&#39;temperature_c:Q&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Hőmérséklet (°C)&#39;</span><span class="p">),</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;city:N&#39;</span><span class="p">,</span>
+    <span class="n">tooltip</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">,</span> <span class="s1">&#39;temperature_c&#39;</span><span class="p">,</span> <span class="s1">&#39;fetched_at&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">altair_chart</span><span class="p">(</span><span class="n">chart</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre>
+    </div>
+
+    <h3>11. Logikus Fájlszerkezet ✅</h3>
+    <div class="codehilite">
+        <pre><span></span><code>WeatherRESTAPI/
+├── backend/
+│   ├── api/          # API routes
+│   ├── core/         # Config, database, logging
+│   ├── models/       # ORM modellek
+│   ├── schemas/      # Pydantic sémák
+│   ├── services/     # Üzleti logika
+│   └── tests/        # Egységtesztek
+├── frontend/
+│   └── app.py        # Streamlit UI
+├── scripts/
+│   └── seed.py       # Segédscript
+├── .env.example      # Környezeti változók példa
+├── requirements.txt  # Függőségek
+├── start.sh         # Indítószkript
+└── README.md        # Dokumentáció
+</code></pre>
+    </div>
+
+    <h3>12. Indítófájl/Script ✅</h3>
+    <p><strong>Fájl</strong>: <code>start.sh</code></p>
+    <div class="codehilite">
+        <pre><span></span><code><span class="ch">#!/bin/bash</span>
+uvicorn<span class="w"> </span>backend.app:app<span class="w"> </span>--reload<span class="w"> </span><span class="p">&amp;</span>
+streamlit<span class="w"> </span>run<span class="w"> </span>frontend/app.py
+</code></pre>
+    </div>
+
+    <p>Alternatíva: Külön-külön a parancsok.</p>
+    <h3>13. Verziókövetés (GitHub) ✅</h3>
+    <ul>
+        <li>✅ A projekt <code>.git</code> mappával rendelkezik</li>
+        <li>✅ GitHub repository-ban tárolva</li>
+        <li>✅ <code>.gitignore</code> fájl használatával</li>
+    </ul>
+    <h3>14. Deployálhatóság ✅</h3>
+    <h4>Streamlit Cloud</h4>
+    <ul>
+        <li>✅ <code>requirements.txt</code> megvan</li>
+        <li>✅ Streamlit alkalmazás deployolható</li>
+    </ul>
+    <h4>Render.com (Backend)</h4>
+    <ul>
+        <li>✅ FastAPI backend külön is futtatható</li>
+        <li>✅ Uvicorn indítással production-ready</li>
+    </ul>
+    <hr />
+    <h2>🎯 Összefoglalás</h2>
+    <p>A <strong>WeatherRESTAPI</strong> projekt <strong>teljes mértékben megfelel</strong> az összes követelménynek:
+    </p>
+    <h3>Komponensek</h3>
+    <ul>
+        <li>✅ FastAPI backend REST API-val</li>
+        <li>✅ Streamlit frontend</li>
+        <li>✅ SQLite adatbázis + SQLAlchemy ORM</li>
+        <li>✅ Időzített automatizáció (scheduler + email)</li>
+    </ul>
+    <h3>Technikai Megvalósítás</h3>
+    <ul>
+        <li>✅ Virtuális környezet (<code>venv</code>)</li>
+        <li>✅ Moduláris szerkezet (models, services, api, frontend)</li>
+        <li>✅ OOP, funkcionális, procedurális paradigmák</li>
+        <li>✅ Pydantic sémák, SQLAlchemy ORM</li>
+        <li>✅ Külső API hívás (Open-Meteo)</li>
+        <li>✅ Környezeti változók (.env)</li>
+        <li>✅ Hibakezelés + logging</li>
+        <li>✅ 23+ pytest teszt (@pytest.mark.parametrize-zel)</li>
+        <li>✅ Vizualizációk (Altair grafikonok)</li>
+        <li>✅ GitHub verziókövetés</li>
+        <li>✅ Deployolható (Streamlit Cloud + Render.com)</li>
+    </ul>
+    <h3>Programozási Stílus</h3>
+    <ul>
+        <li><strong>Modern Python</strong>: Type hints, f-stringek</li>
+        <li><strong>Clean Code</strong>: Érthető változónevek, jól szervezett</li>
+        <li><strong>Best Practices</strong>: Dependency injection, separation of concerns</li>
+    </ul>
+    <p>A projekt egy <strong>komplex, production-ready mikroszerviz alkalmazás</strong>, amely demonstrálja a Python
+        backend-frontend fejlesztés minden aspektusát! 🚀</p>
+
+    <hr>
+    <p style="text-align: center; color: #888; font-size: 0.9em; margin-top: 30px;">
+        <em>Dokumentum létrehozva: 2025-12-04</em>
+    </p>
+</body>
+
+</html>
