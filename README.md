@@ -10,6 +10,14 @@ adatbázisban, és megjeleníti egy webes felületen.
 
 ------------------------------------------------------------------------
 
+## Telepítés
+
+    python -m venv venv
+    venv\Scripts\activate
+    pip install -r requirements.txt
+
+------------------------------------------------------------------------
+
 ## Főbb komponensek
 
 ### Backend (FastAPI)
@@ -24,7 +32,7 @@ adatbázisban, és megjeleníti egy webes felületen.
 
 Indítás:
 
-    uvicorn app.main:app --reload
+    uvicorn backend.app:app --reload
 
 ### Frontend (Streamlit)
 
@@ -33,12 +41,6 @@ A Streamlit alkalmazás meghívja a FastAPI végpontjait és megjeleníti az ada
 Indítás:
 
     streamlit run frontend/app.py
-
-------------------------------------------------------------------------
-
-## Telepítés
-
-    pip install -r requirements.txt
 
 ------------------------------------------------------------------------
 
