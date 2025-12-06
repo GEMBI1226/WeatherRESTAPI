@@ -60,143 +60,32 @@ THEMES = {
 
 current_theme = THEMES[st.session_state.theme]
 
+# Load external CSS file
+css_file_path = os.path.join(os.path.dirname(__file__), "styles.css")
+with open(css_file_path) as f:
+    css_content = f.read()
+
+# Inject CSS with theme variables
+button_text = current_theme['card_bg'] if st.session_state.theme == 'dark' else 'white'
+
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    * {{
-        font-family: 'Inter', sans-serif;
+    :root {{
+        --bg-color: {current_theme['bg_color']};
+        --sidebar-bg: {current_theme['sidebar_bg']};
+        --text-color: {current_theme['text_color']};
+        --subtext-color: {current_theme['subtext_color']};
+        --card-bg: {current_theme['card_bg']};
+        --border-color: {current_theme['border_color']};
+        --primary-color: {current_theme['primary_color']};
+        --secondary-text: {current_theme['secondary_text']};
+        --shadow: {current_theme['shadow']};
+        --chart-bg: {current_theme['chart_bg']};
+        --chart-text: {current_theme['chart_text']};
+        --button-text: {button_text};
     }}
     
-    /* Clean background */
-    .stApp {{
-        background: {current_theme['bg_color']};
-    }}
-    
-    /* Hide default elements */
-    #MainMenu {{visibility: hidden;}}
-    footer {{visibility: hidden;}}
-    
-    /* Title */
-    h1 {{
-        color: {current_theme['text_color']};
-        font-weight: 700;
-        padding: 1rem 0;
-    }}
-    
-    h2, h3 {{
-        color: {current_theme['text_color']};
-        font-weight: 600;
-    }}
-    
-    /* Sidebar */
-    [data-testid="stSidebar"] {{
-        background: {current_theme['sidebar_bg']};
-        border-right: 1px solid {current_theme['border_color']};
-    }}
-
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {{
-        color: {current_theme['text_color']};
-    }}
-    
-    [data-testid="stSidebar"] label {{
-        color: {current_theme['text_color']};
-    }}
-    
-    /* Weather cards */
-    .weather-card {{
-        background: {current_theme['card_bg']};
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border: 1px solid {current_theme['border_color']};
-        box-shadow: 0 1px 3px {current_theme['shadow']};
-        transition: box-shadow 0.2s ease;
-    }}
-    
-    .weather-card:hover {{
-        box-shadow: 0 4px 6px {current_theme['shadow']};
-    }}
-    
-    .city-name {{
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: {current_theme['text_color']};
-        margin-bottom: 0.5rem;
-    }}
-    
-    .temperature {{
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: {current_theme['primary_color']};
-    }}
-    
-    .weather-detail {{
-        color: {current_theme['subtext_color']};
-        font-size: 0.95rem;
-        margin: 0.3rem 0;
-    }}
-    
-    /* Stats cards */
-    .stat-card {{
-        background: {current_theme['card_bg']};
-        border-radius: 10px;
-        padding: 1.5rem;
-        text-align: center;
-        border: 1px solid {current_theme['border_color']};
-        box-shadow: 0 1px 3px {current_theme['shadow']};
-    }}
-    
-    .stat-value {{
-        font-size: 2rem;
-        font-weight: 700;
-        color: {current_theme['primary_color']};
-    }}
-    
-    .stat-label {{
-        color: {current_theme['secondary_text']};
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        font-weight: 500;
-    }}
-    
-    /* Buttons */
-    .stButton > button {{
-        background: {current_theme['primary_color']};
-        color: {current_theme['card_bg'] if st.session_state.theme == 'dark' else 'white'};
-        border: none;
-        border-radius: 8px;
-        padding: 0.6rem 1.5rem;
-        font-weight: 600;
-        transition: background 0.2s ease;
-    }}
-    
-    .stButton > button:hover {{
-        opacity: 0.9;
-    }}
-    
-    /* Chart container */
-    .chart-container {{
-        background: {current_theme['card_bg']};
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border: 1px solid {current_theme['border_color']};
-        box-shadow: 0 1px 3px {current_theme['shadow']};
-    }}
-    
-    /* Info box in sidebar */
-    .info-box {{
-        color: {current_theme['subtext_color']};
-        margin: 1rem 0;
-        padding: 1rem;
-        background: {current_theme['bg_color']};
-        border-radius: 8px;
-        border: 1px solid {current_theme['border_color']};
-    }}
-    .info-box strong {{
-        color: {current_theme['text_color']};
-    }}
+    {css_content}
 </style>
 """, unsafe_allow_html=True)
 

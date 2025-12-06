@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Clean background */
+.stApp {
+    background: var(--bg-color);
+}
+
+/* Hide default elements */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+/* Title */
+h1 {
+    color: var(--text-color);
+    font-weight: 700;
+    padding: 1rem 0;
+}
+
+h2,
+h3 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+}
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: var(--text-color);
+}
+
+[data-testid="stSidebar"] label {
+    color: var(--text-color);
+}
+
+/* Weather cards */
+.weather-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow);
+    transition: box-shadow 0.2s ease;
+}
+
+.weather-card:hover {
+    box-shadow: 0 4px 6px var(--shadow);
+}
+
+.city-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.temperature {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.weather-detail {
+    color: var(--subtext-color);
+    font-size: 0.95rem;
+    margin: 0.3rem 0;
+}
+
+/* Stats cards */
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    color: var(--secondary-text);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+/* Buttons */
+.stButton>button {
+    background: var(--primary-color);
+    color: var(--button-text);
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.stButton>button:hover {
+    opacity: 0.9;
+}
+
+/* Chart container */
+.chart-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+/* Info box in sidebar */
+.info-box {
+    color: var(--subtext-color);
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.info-box strong {
+    color: var(--text-color);
+}
